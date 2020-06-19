@@ -116,9 +116,9 @@ class Solver(object):
 
         for i, (data) in enumerate(loader):
             padded_input, input_lengths, padded_target = data
-            # padded_input = padded_input.cuda()
-            # input_lengths = input_lengths.cuda()
-            # padded_target = padded_target.cuda()
+            padded_input = padded_input.cuda()
+            input_lengths = input_lengths.cuda()
+            padded_target = padded_target.cuda()
 
             pred, gold = self.model(padded_input, input_lengths, padded_target)
             loss, n_correct = cal_performance(pred, gold,
@@ -127,16 +127,17 @@ class Solver(object):
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-
+                lr = self.optimizer.get_lr()
+            else:
+                lr = None
             total_loss += loss.item()
             non_pad_mask = gold.ne(Const.IGNORE_ID)
             n_word = non_pad_mask.sum().item()
 
             if i % self.print_freq == 0:
-                print('Epoch {0} | Iter {1} | Average Loss {2:.3f} | '
-                      'Current Loss {3:.6f} | {4:.1f} ms/batch'.format(
-                          epoch + 1, i + 1, total_loss / (i + 1),
-                          loss.item(), 1000 * (time.time() - start) / (i + 1)),
+                print('Epoch {0} | lr {1:.6f} | Iter {2} | Average Loss {3:.3f} | '
+                      'Current Loss {4:.6f} | {5:.1f} ms/batch'.format(
+                    epoch + 1, lr, i + 1, total_loss / (i + 1), loss.item(), 1000 * (time.time() - start) / (i + 1)),
                       flush=True)
 
         return total_loss / (i + 1)

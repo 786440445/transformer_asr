@@ -1,14 +1,13 @@
 """A wrapper class for optimizer"""
 import torch
-
+import math
 
 class TransformerOptimizer(object):
     """A simple wrapper class for learning rate scheduling"""
 
-    def __init__(self, optimizer, k, d_model, warmup_steps=4000):
+    def __init__(self, optimizer, init_lr, d_model, warmup_steps=4000):
         self.optimizer = optimizer
-        self.k = k
-        self.init_lr = d_model ** (-0.5)
+        self.init_lr = init_lr
         self.warmup_steps = warmup_steps
         self.step_num = 0
         self.visdom_lr = None
@@ -21,12 +20,16 @@ class TransformerOptimizer(object):
         self._visdom()
         self.optimizer.step()
 
+    def get_lr(self):
+        return self.lr
+
     def _update_lr(self):
         self.step_num += 1
-        lr = self.k * self.init_lr * min(self.step_num ** (-0.5),
-                                         self.step_num * (self.warmup_steps ** (-1.5)))
+        self.lr = self.init_lr * math.exp(-0.8 * self.step_num / self.warmup_steps)
+        # self.lr = self.k * self.init_lr * min(self.step_num ** (-0.5),
+        #                                  self.step_num * (self.warmup_steps ** (-1.5)))
         for param_group in self.optimizer.param_groups:
-            param_group['lr'] = lr
+            param_group['lr'] = self.lr
 
     def load_state_dict(self, state_dict):
         self.optimizer.load_state_dict(state_dict)

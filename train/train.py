@@ -6,6 +6,8 @@ import os
 home_dir = os.getcwd()
 sys.path.append(home_dir)
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 from src.decoder import Decoder
 from src.encoder import Encoder
 from src.transformer import Transformer
@@ -17,12 +19,11 @@ from src.dataloader import AudioDataLoader
 import warnings
 warnings.filterwarnings("ignore", message="Numerical issues were encountered ")
 
-print(home_dir)
 parser = argparse.ArgumentParser(
     "End-to-End Automatic Speech Recognition Training "
     "(Transformer framework).")
 parser.add_argument('--dict', type=str,
-                    default=os.path.join(home_dir, 'tmp/train_chars.txt'),
+                    default=os.path.join(home_dir, r'tmp\train_chars.txt'),
                     help='Dictionary which should include <unk> <sos> <eos>')
 # Low Frame Rate (stacking and skipping frames)
 parser.add_argument('--LFR_m', default=4, type=int,
@@ -68,16 +69,16 @@ parser.add_argument('--epochs', default=150, type=int,
 # minibatch
 parser.add_argument('--shuffle', default=1, type=int,
                     help='reshuffle the data at every epoch')
-parser.add_argument('--batch_size', default=16, type=int,
+parser.add_argument('--batch_size', default=8, type=int,
                     help='Batch size')
-parser.add_argument('--num_workers', default=8, type=int,
+parser.add_argument('--num_workers', default=4, type=int,
                     help='Number of workers to generate minibatch')
 parser.add_argument('--feature_dim', default=80, type=int,
                     help='feature dimension of data')
 # optimizer
-parser.add_argument('--k', default=0.2, type=float,
+parser.add_argument('--init_lr', default=0.001, type=float,
                     help='tunable scalar multiply to learning rate')
-parser.add_argument('--warmup_steps', default=4000, type=int,
+parser.add_argument('--warmup_steps', default=100, type=int,
                     help='warmup steps')
 # save and load model
 parser.add_argument('--save_folder', default='./model_log/checkpoint/',
@@ -89,7 +90,7 @@ parser.add_argument('--continue_from', default='',
 parser.add_argument('--model_path', default='final.pth.tar',
                     help='Location to save best validation model')
 # logging
-parser.add_argument('--print_freq', default=10, type=int,
+parser.add_argument('--print_freq', default=5, type=int,
                     help='Frequency of printing training infomation')
 
 
@@ -126,11 +127,11 @@ def main(args):
                       pe_maxlen=args.pe_maxlen)
     model = Transformer(encoder, decoder)
     print(model)
-    # model.cuda()
+    model.cuda()
     # optimizer
     optimizier = TransformerOptimizer(
         torch.optim.Adam(model.parameters(), betas=(0.9, 0.98), eps=1e-09),
-        args.k,
+        args.init_lr,
         args.d_model,
         args.warmup_steps)
 
