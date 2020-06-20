@@ -129,7 +129,7 @@ class Solver(object):
                 self.optimizer.step()
                 lr = self.optimizer.get_lr()
             else:
-                lr = None
+                lr = self.optimizer.get_lr()
             total_loss += loss.item()
             non_pad_mask = gold.ne(Const.IGNORE_ID)
             n_word = non_pad_mask.sum().item()

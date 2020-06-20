@@ -69,16 +69,16 @@ parser.add_argument('--epochs', default=150, type=int,
 # minibatch
 parser.add_argument('--shuffle', default=1, type=int,
                     help='reshuffle the data at every epoch')
-parser.add_argument('--batch_size', default=8, type=int,
+parser.add_argument('--batch_size', default=6, type=int,
                     help='Batch size')
 parser.add_argument('--num_workers', default=4, type=int,
                     help='Number of workers to generate minibatch')
 parser.add_argument('--feature_dim', default=80, type=int,
                     help='feature dimension of data')
 # optimizer
-parser.add_argument('--init_lr', default=0.001, type=float,
+parser.add_argument('--init_lr', default=0.002, type=float,
                     help='tunable scalar multiply to learning rate')
-parser.add_argument('--warmup_steps', default=100, type=int,
+parser.add_argument('--warmup_steps', default=1000, type=int,
                     help='warmup steps')
 # save and load model
 parser.add_argument('--save_folder', default='./model_log/checkpoint/',
@@ -90,7 +90,7 @@ parser.add_argument('--continue_from', default='',
 parser.add_argument('--model_path', default='final.pth.tar',
                     help='Location to save best validation model')
 # logging
-parser.add_argument('--print_freq', default=5, type=int,
+parser.add_argument('--print_freq', default=1, type=int,
                     help='Frequency of printing training infomation')
 
 
