@@ -50,7 +50,7 @@ parser.add_argument('--d_inner', default=2048, type=int,
                     help='Dimension of inner')
 parser.add_argument('--dropout', default=0.1, type=float,
                     help='Dropout rate')
-parser.add_argument('--pe_maxlen', default=5000, type=int,
+parser.add_argument('--pe_maxlen', default=1000, type=int,
                     help='Positional Encoding max len')
 # decoder
 parser.add_argument('--d_word_vec', default=512, type=int,
@@ -69,16 +69,16 @@ parser.add_argument('--epochs', default=150, type=int,
 # minibatch
 parser.add_argument('--shuffle', default=1, type=int,
                     help='reshuffle the data at every epoch')
-parser.add_argument('--batch_size', default=6, type=int,
+parser.add_argument('--batch_size', default=16, type=int,
                     help='Batch size')
 parser.add_argument('--num_workers', default=4, type=int,
                     help='Number of workers to generate minibatch')
 parser.add_argument('--feature_dim', default=80, type=int,
                     help='feature dimension of data')
 # optimizer
-parser.add_argument('--init_lr', default=0.002, type=float,
+parser.add_argument('--init_lr', default=1, type=float,
                     help='tunable scalar multiply to learning rate')
-parser.add_argument('--warmup_steps', default=1000, type=int,
+parser.add_argument('--warmup_steps', default=4000, type=int,
                     help='warmup steps')
 # save and load model
 parser.add_argument('--save_folder', default='./model_log/checkpoint/',

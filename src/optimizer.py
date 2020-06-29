@@ -8,6 +8,7 @@ class TransformerOptimizer(object):
     def __init__(self, optimizer, init_lr, d_model, warmup_steps=4000):
         self.optimizer = optimizer
         self.init_lr = init_lr
+        self.lr = d_model ** (-0.5)
         self.warmup_steps = warmup_steps
         self.step_num = 0
         self.visdom_lr = None
@@ -21,14 +22,17 @@ class TransformerOptimizer(object):
         self.optimizer.step()
 
     def get_lr(self):
-        return self.lr
+        return self.cur_lr
 
     def _update_lr(self):
         self.step_num += 1
-        self.lr = self.init_lr * math.exp(-0.5 * self.step_num / self.warmup_steps)
-        self.lr = max(self.lr, 0.000001)
+        if self.step_num < 10000:
+            self.cur_lr = self.init_lr * self.lr * min(self.step_num ** (-0.5),
+                                                    self.step_num * (self.warmup_steps ** (-1.5)))
+        else:
+            self.cur_lr = 0.000001
         for param_group in self.optimizer.param_groups:
-            param_group['lr'] = self.lr
+            param_group['lr'] = self.cur_lr
 
     def load_state_dict(self, state_dict):
         self.optimizer.load_state_dict(state_dict)

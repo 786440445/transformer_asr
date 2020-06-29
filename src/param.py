@@ -2,8 +2,8 @@ import argparse
 
 class DataHparams:
     parser = argparse.ArgumentParser()
-    parser.add_argument('--thchs30', default=True, type=bool)
-    parser.add_argument('--aishell', default=False, type=bool)
+    parser.add_argument('--thchs30', default=False, type=bool)
+    parser.add_argument('--aishell', default=True, type=bool)
     parser.add_argument('--prime', default=False, type=bool)
     parser.add_argument('--stcmd', default=False, type=bool)
     parser.add_argument('--aidatatang', default=False, type=bool)

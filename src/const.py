@@ -64,7 +64,7 @@ class Const:
         NoiseOutPath = '../../../speech_data/noise_data/'
 
     elif ServerId == ServerIndex.Windows:
-        SpeechDataPath = 'C:\speech_data'
+        SpeechDataPath = 'E:\speech_data'
         NoiseOutPath = '../../../speech_data/noise_data/'
 
 
