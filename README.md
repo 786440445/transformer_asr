@@ -33,4 +33,6 @@ python3 train.py
 python3 recognition.py
 ```
 
+- Pytorch版本的transformer ASR，可以运行，但是无法收敛。后续研究
+
 - 2017 google [Attention is All You Need]
